@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 import json
+import pprint
 import subprocess
 from pathlib import Path
 
@@ -20,26 +21,52 @@ def parse_and_build_version(version_path, repo_path):
     return f"v{ver['major']}.{ver['minor']}.{short_sha}"
 
 
-itch_project = "idbrii/seedjump:web"
-export_path = Path("C:/code/Builds/seedjump/")
-project_root = Path("C:/code/godot/seedjump/")
+def build_platform(platform, export_root, output_artifact):
+    export_path = export_root / platform
+    if output_artifact:
+        output_artifact = export_path / output_artifact
+    else:
+        output_artifact = export_path
+
+    # TODO: Do we need to delete if it already exists?
+    export_path.mkdir(exist_ok=True)
+
+    print()
+    print(f"Building {platform} build...")
+    # pprint.pprint(
+    subprocess.check_call(
+        [
+            "godot",
+            "--headless",
+            "--export-release",
+            platform,
+            output_artifact,
+            project_path,
+        ]
+    )
+    itch_channel = f"{itch_project}:{platform}"
+    print("Uploading as version", itch_channel, version)
+    # pprint.pprint(
+    subprocess.check_call(
+        [
+            "butler",
+            "push",
+            export_path,
+            itch_channel,
+            "--userversion",
+            version,
+        ]
+    )
+
+
+project = "seedjump"
+itch_project = f"idbrii/{project}"
+export_path = Path("C:/code/Builds/") / project
+project_root = Path("C:/code/godot/") / project
 project_path = project_root / "project.godot"
 version_path = project_root / "ci/version.json"
 
 version = parse_and_build_version(version_path, project_root)
 
-print("Building web build...")
-subprocess.check_call(
-    [
-        "godot",
-        "--headless",
-        "--export-release",
-        "web",
-        export_path / "index.html",
-        project_path,
-    ]
-)
-print("Uploading as version", itch_project, version)
-subprocess.check_call(
-    ["butler", "push", export_path, itch_project, "--userversion", version]
-)
+build_platform("web", export_path, "index.html")
+build_platform("win", export_path, project + ".exe")

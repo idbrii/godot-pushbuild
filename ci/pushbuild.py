@@ -7,6 +7,12 @@ from pathlib import Path
 
 import git
 
+# Configuration
+project = "seedjump"
+itch_project = f"idbrii/{project}"
+export_path = Path("C:/code/Builds/") / project
+project_root = Path("C:/code/godot/") / project
+
 
 def parse_and_build_version(version_path, repo_path):
     """Builds a version from a json and git repo.
@@ -59,10 +65,6 @@ def build_platform(platform, export_root, output_artifact):
     )
 
 
-project = "seedjump"
-itch_project = f"idbrii/{project}"
-export_path = Path("C:/code/Builds/") / project
-project_root = Path("C:/code/godot/") / project
 project_path = project_root / "project.godot"
 version_path = project_root / "ci/version.json"
 

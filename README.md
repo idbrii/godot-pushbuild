@@ -12,6 +12,7 @@ Pushes builds using [butler](https://itch.io/docs/butler/) and includes the git 
     1. Name your windows build "win"
     1. Name your html5 build "web"
 1. Add export_presets.cfg to source control so other people can skip the above step.
+1. Modify the version.json file in your ci folder to use your desired major/minor version. pushbuild will use these values to build the final version number that includes your latest git commit hash.
 1. Modify the "Configuration" section of pushbuild.py:
 ```
 project = "seedjump"
@@ -19,6 +20,7 @@ itch_project = f"idbrii/{project}"
 export_path = Path("C:/code/Builds/") / project
 project_root = Path("C:/code/godot/") / project
 ```
+1. Commit any local changes (since the latest commit is part of the version number).
 1. Optional: Comment out unwanted builds at the bottom of pushbuild.py
 1. Run pushbuild.py
 

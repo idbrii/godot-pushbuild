@@ -8,10 +8,9 @@ from pathlib import Path
 import git
 
 # Configuration
-project = "seedjump"
+project = "TODO"
 itch_project = f"idbrii/{project}"
-export_path = Path("C:/code/Builds/") / project
-project_root = Path("C:/code/godot/") / project
+export_path = Path("C:/code/builds/") / project
 
 
 def parse_and_build_version(version_path, repo_path):
@@ -35,7 +34,7 @@ def build_platform(platform, export_root, output_artifact):
         output_artifact = export_path
 
     # TODO: Do we need to delete if it already exists?
-    export_path.mkdir(exist_ok=True)
+    export_path.mkdir(parents=True, exist_ok=True)
 
     print()
     print(f"Building {platform} build...")
@@ -65,6 +64,7 @@ def build_platform(platform, export_root, output_artifact):
     )
 
 
+project_root = Path(__file__).resolve().parent.parent
 project_path = project_root / "project.godot"
 version_path = project_root / "ci/version.json"
 
